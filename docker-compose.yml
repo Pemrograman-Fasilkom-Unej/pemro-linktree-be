@@ -1,0 +1,65 @@
+version: '3'
+
+networks:
+  laravel_network:
+    name: laravel_network
+
+volumes:
+  mysql-data:
+
+services:
+  php:
+    container_name: php-${APP_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/${APP_NAME}
+    ports:
+      - "9000:900"
+    networks:
+      - laravel_network
+
+  nginx:
+    container_name: nginx-${APP_NAME}
+    image: nginx:1.23.3-alpine
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - laravel_network
+    volumes:
+      - ./:/var/www/${APP_NAME}
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  mysql:
+    container_name: mysql-${APP_NAME}
+    image: mysql
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel_network
+
+  phpmyadmin:
+    container_name: phpmyadmin-${APP_NAME}
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "7000:80"
+    links:
+      - mysql:db
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      UPLOAD_LIMIT: 3000000000
+    networks:
+      - laravel_network
+#Docker Networks
+  # phpmyadmin:

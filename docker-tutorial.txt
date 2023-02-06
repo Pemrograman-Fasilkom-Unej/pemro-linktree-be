@@ -1,0 +1,7 @@
+1. Install docker nya dulu dan pastikan sudah berjalan semestinya
+2. Buka terminal dan arahkan ke directory projek
+3. Jika pertama kali clone dari repo silahkan copy isi .env.example ke .env lalu jalankan php artisan key generate
+4. Untuk build container jalankan 'docker-compose up -d --build' pada terminal
+5. Jika ingin melakukan perubahan settingan docker silahkan di downkan dulu docker nya menggunakan perintah 'docker-compose down'
+6. Untuk menjalankan perintah artisan di dalam container gunakan perintah 'docker-compose run --rm php php /var/www/{APP_NAME}/artisan {any command}'
+   nb : lihat dan ubah root {APP_NAME} di file default.conf jika diperlukan
