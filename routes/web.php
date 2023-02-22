@@ -21,9 +21,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard')->prefix("admin");
+})->middleware(['auth', 'verified', 'role:Admin'])->name('dashboard')->prefix("admin");
 
-Route::middleware('auth')->prefix("admin")->group(function () {
+Route::middleware(['auth', 'role:Admin'])->prefix("admin")->group(function () {
     Route::view('about', 'about')->name('about');
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
